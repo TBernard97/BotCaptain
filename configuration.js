@@ -106,6 +106,9 @@ prompt.start();
 prompt.get(schema, function (err, result) {
     if (err) { return onErr(err); }
     var config = {};
+    function isBlank(str) {
+        return (!str || /^\s*$/.test(str));
+    }
     
     config.email = {
         address: "",
@@ -117,7 +120,8 @@ prompt.get(schema, function (err, result) {
         password: "",
         keyspace: "",
         secureConnectBundle: "",
-        contactPoint: ""
+        contactPoint: "",
+        enabled: false
     }
 
     config.encryption = {
@@ -129,23 +133,25 @@ prompt.get(schema, function (err, result) {
         endpoint: "",
         username: "",
         password: "",
-        objectID: ""
+        objectID: "",
+        enabled: false
     }
 
     config.kudu = {
         kuduAPI: "",
         userName: "",
-        password: ""
+        password: "",
+        enabled: false
     }
 
 
     config.email.address = result.botEmail;
     config.email.password = result.botEmailPassword;
-
-    if(result.cassandraUsername != null && result.cassandraPassword != null){
+    // console.log(isBlank(result.cassandraUsername));
+    if(isBlank(result.cassandraUsername) == false  && isBlank(result.cassandraPassword) == false){
         config.cassandra.username = result.cassandraUsername;
         config.cassandra.password = result.cassandraPassword;
-
+        config.cassandra.enabled = true;
         try {
             config.cassandra.keyspace = result.cassandraKeySpace;
             config.cassandra.secureConnectBundle = result.cassandraSecureConnectBundle;
@@ -159,35 +165,52 @@ prompt.get(schema, function (err, result) {
             console.log("[INFO] It appears no contact point was specified for Azure")
         }
 
+    } else {
+        console.log("[INFO] It appears no Cassandra Credentials were specified.")
+    }
+
+    if(isBlank(result.encryptionAlgorithm) == false  && isBlank(result.encryptionPassword) == false){
+        try {
+            config.encryption.algorithm = result.encryptionAlgorithm;
+            config.encryption.password = result.encryptionPassword;
+        }
+    
+        catch {
+            console.log("[INFO] It seems that one or more encryption parameters were not specified.");
+        }
+
+    } else {
+        console.log("[INFO] It appears no encryption parameters were specifed.");
+    }
+   
+    if(isBlank(result.xAPIEndpoint) == false && isBlank(result.xAPIUsername) == false && isBlank(result.xAPIPassword) == false && isBlank(result.xAPIObjectID) == false){
+        try {
+            config.xAPI.endpoint = result.xAPIEndpoint;
+            config.xAPI.username = result.xAPIUsername;
+            config.xAPI.password = result.xAPIPassword;
+            config.xAPI.objectID = result.xAPIObjectID;
+            config.xAPI.enabled = true;
+        }
+        catch {
+            console.log("[INFO] It seems that one or more xAPI parameters were not specified.");
+        }
+    } else {
+        console.log("[INFO] It seems that no xAPI parameters were specified.");
     } 
 
-    try {
-        config.encryption.algorithm = result.encryptionAlgorithm;
-        config.encryption.password = result.encryptionPassword;
-    }
-
-    catch {
-        console.log("[INFO] It seems that one or more encryption parameters were not specified.");
-    }
- 
-    try {
-        config.xAPI.endpoint = result.xAPIEndpoint;
-        config.xAPI.username = result.xAPIUsername;
-        config.xAPI.password = result.xAPIPassword;
-        config.xAPI.objectID = result.xAPIObjectID;
-    }
-    catch {
-        console.log("[INFO] It seems that one or more xAPI parameters were not specified.");
-    }
-
-    try {
-        config.kudu.kuduAPI = result.kuduAPI;
-        config.kudu.userName = result.kuduUsername;
-        config.kudu.password = result.kuduPassword;
-    }
-    
-    catch {
-        console.log("[INFO] It seems that one or more kudu API parameters were not specified.");
+    if(isBlank(result.kuduAPI) == false && isBlank(result.kuduUsername) == false && isBlank(result.kuduPassword) == false){
+        try {
+            config.kudu.kuduAPI = result.kuduAPI;
+            config.kudu.userName = result.kuduUsername;
+            config.kudu.password = result.kuduPassword;
+            config.kudu.enabled = true;
+        }
+        
+        catch {
+            console.log("[INFO] It seems that one or more kudu API parameters were not specified.");
+        }
+    } else {
+        console.log("[INFO] It seems that no kudu API parameters were specified.");
     }
 
     jsonfile.writeFileSync("./config.json", config, {flag: 'w'});
