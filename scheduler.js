@@ -29,7 +29,7 @@ class scheduler {
                 port: 25,
                 auth: {
                     user: config.email.address,
-                    pass: config.email.pass
+                    pass: config.email.password
                 },
                 tls: {
                     rejectUnauthorized: false 
