@@ -317,8 +317,12 @@ logs/info/*.log
 #BotCaptain Classrooms
 Resources/Classes/*
 
+#Keep example classroom
 !Resources/Classes/.gitkeep
 !Resources/Classes/MA441
+
+#DS_Store in example
+Resources/Classes/MA441/.DS_Store
 
 
 #Yarn.lock
@@ -330,8 +334,6 @@ yarn.lock
 #Secure Connect Bundles
 Resources/secure-connect-botcaptain.zip
 
-#Messages
-Resources/Classes/
 
 #Courseinfo data
 Resources/courseinfo.json
