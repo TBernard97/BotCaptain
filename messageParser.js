@@ -179,8 +179,8 @@ class messageParser {
                 }
             
                 //Make directories
-                fileIO.makeDirectory(`./logs/channels/${channelID}`);
-                fileIO.makeDirectory(`./logs/channels/${channelID}/${name}`);
+                // fileIO.makeDirectory(`./logs/channels/${channelID}`);
+                // fileIO.makeDirectory(`./logs/channels/${channelID}/${name}`);
 
                 //Record turnContext data
                 fileIO.logContext(turnContext, user.profile);
