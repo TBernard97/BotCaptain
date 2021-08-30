@@ -2,7 +2,7 @@ const { ConversationState, MemoryStorage, TestAdapter } = require("botbuilder");
 const{ DialogSet, DialogTurnStatus } = require("botbuilder-dialogs");
 const { ProfileDialog } = require('../profileDialog');
 const jsonfile = require('jsonfile');
-
+const  { fileIO } = require('../fileIO')
 describe("ProfileDialog tests cases", function (){
     this.timeout(5000);
     it("should call ProfileDialog when wake word comes up", async () => {
@@ -12,8 +12,11 @@ describe("ProfileDialog tests cases", function (){
         dialogs.add(new ProfileDialog("prompt"));
         const adapter = new TestAdapter(async (context) => {
             const dc = await dialogs.createContext(context);
-            let activityId = context.activity.from.id
-            jsonfile.writeFileSync('./dialogID.json', activityId, {flag: 'w'})
+            let userID = context.activity.from.id;
+            let channelID = context.activity.channelId;
+            console.log(`UserID: ${userID}, ChannelID: ${channelID}`)
+            // jsonfile.writeFileSync('./dialogID.json', activityId, {flag: 'w'})
+            fileIO.setDialog(channelID, userID);
             const results = await dc.continueDialog();
             if(results.status === DialogTurnStatus.empty){
                 await dc.prompt("prompt", "Hello User1. Please answer the following questions to setup your profile.")

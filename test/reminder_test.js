@@ -177,7 +177,7 @@ describe("ReminderDialog test cases", function(){
         await adapter.test("!remind", "What task would you like to see? (1) week1 or (2) tutorial")
         .send("week1")
         .assertReply("What date would you like this reminder to be sent?")
-        .send("2021-04-20")
+        .send("2021-12-20")
         .assertReply("What time would you like this reminder to be sent?")
         .send("7:30")
         .assertReply("The time 7:30 is not valid. Please send a time based of 24-hour clock like 17:30 or 05:30.")
