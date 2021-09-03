@@ -1,0 +1,36 @@
+{
+    "type": "AdaptiveCard",
+    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+    "version": "1.3",
+    "body": [
+        {
+            "type": "Input.ChoiceSet",
+            "id": "CompactSelectVal",
+            "label": "What role would you like for class?",
+            "style": "compact",
+            "isRequired": true,
+            "errorMessage": "This is a required input",
+            "placeholder": "Please choose",
+            "choices": [
+                {
+                    "title": "31337 C0D3R",
+                    "value": "31337 C0D3R"
+                },
+                {
+                    "title": "Business Overlord",
+                    "value": "Business Overlord"
+                },
+                {
+                    "title": "Math Geek",
+                    "value": "Math Geek"
+                }
+            ]
+        }
+    ],
+    "actions": [
+        {
+            "type": "Action.Submit",
+            "title": "OK"
+        }
+    ]
+}

@@ -29,6 +29,8 @@ const { ProfileDialog } = require('./profileDialog');
 const { TaskDialog } = require('./taskDialog');
 //Reminder Dialog 
 const { ReminderDialog } = require('./reminderDialog');
+//Role Selection Dialog
+const { RoleDialog } = require('./roleDialog')
 //Module for pushing xAPI statements
 const { xAPI_Statements } = require('./xAPI_Statements');
 
@@ -37,7 +39,8 @@ const { xAPI_Statements } = require('./xAPI_Statements');
 const USER_INFO_PROPERTY = 'userInfoPropertyAccessor';
 
 //Logging
-const { log } = require('./logger')
+const { log } = require('./logger');
+
 
 //Message parser will be the bots main turn handler.
 class messageParser {
@@ -74,7 +77,10 @@ class messageParser {
             .add(new TaskDialog('taskDialog'))
 
             //Reminder 
-            .add(new ReminderDialog('remindDialog'));
+            .add(new ReminderDialog('remindDialog'))
+
+            //Role Selection
+            .add(new RoleDialog('roleDialog'));
     }
         
     async onTurn(turnContext) {
@@ -140,7 +146,7 @@ class messageParser {
 
                     await turnContext.sendActivity('Your profile has been stored.');
                     await xAPI_Handler.recordLogin(user.profile.email);
-                    log.info(`Profile for ${name} has been created.`)
+                    log.info(`Profile for ${name} has been created.`);
                 }                      
             } 
             
@@ -155,14 +161,14 @@ class messageParser {
                                                 channelID);
                 
                 //List of BotCaptains available function plugins
-                let commands = ['task', 'remind']
+                let commands = ['task', 'remind', 'role']
 
                 if(utterance[0] === "!" && commands.includes(utterance.slice(1)) && dialogTurnResult.status === DialogTurnStatus.empty){
                     //Start appropriate dialog
                     let command = utterance.slice(1);
                     let dialog = command.concat('Dialog');
                     fileIO.setDialog(channelID, userID);
-                    log.info(`[INFO] User ${user} initiated a command.`)
+                    log.info(`[INFO] User ${user} initiated a command.`);
                     await dc.beginDialog(`${dialog}`, user);
                         
                 } 
