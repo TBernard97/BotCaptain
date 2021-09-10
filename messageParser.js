@@ -163,6 +163,7 @@ class messageParser {
                         user.profile.role = val.Role;
                         console.log(user.profile);
                         fileIO.insertProfile(user.profile);
+                        xAPI_Handler.recordRoleSelection(user.profile.email, user.profile.role);
                     }
                    
                 }
