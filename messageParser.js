@@ -88,6 +88,8 @@ class messageParser {
         let channelID = turnContext.activity.channelId;
         let name = turnContext.activity.from.name;
         let userID = turnContext.activity.from.id;
+        var txt = turnContext.activity.text;
+        var val = turnContext.activity.value;
         const xAPI_Handler = new xAPI_Statements(); 
 
         if (turnContext.activity.type === ActivityTypes.Message) {
@@ -152,6 +154,18 @@ class messageParser {
             
             //If user profile is present grant access to full functionality
             else {
+
+                //Check to see if message is coming from card
+                if (!txt && val){
+
+                    if(val.Role != undefined){
+                        console.log(val);
+                        user.profile.role = val.Role;
+                        console.log(user.profile);
+                        fileIO.insertProfile(user.profile);
+                    }
+                   
+                }
 
                 //Check for the existence of previous messages and process accordingly
                 var utterance = (turnContext.activity.text || '').trim().toLowerCase();
