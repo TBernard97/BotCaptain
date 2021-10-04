@@ -15,7 +15,7 @@ const MessageQueue = require("./service/MessageQueue");
 const Message = require("./model/messageByUser");
 
 // config file
-const config = require('./config.json')
+const config = require('./config.json');
 
 //Dialog modules and properties
 const { DialogSet, WaterfallDialog, Dialog, DialogTurnStatus } = require('botbuilder-dialogs');
@@ -30,7 +30,9 @@ const { TaskDialog } = require('./taskDialog');
 //Reminder Dialog 
 const { ReminderDialog } = require('./reminderDialog');
 //Role Selection Dialog
-const { RoleDialog } = require('./roleDialog')
+const { RoleDialog } = require('./roleDialog');
+//Task Assignment Dialog
+const { AssignDialog } = require('./assignDialog');
 //Module for pushing xAPI statements
 const { xAPI_Statements } = require('./xAPI_Statements');
 
@@ -80,7 +82,10 @@ class messageParser {
             .add(new ReminderDialog('remindDialog'))
 
             //Role Selection
-            .add(new RoleDialog('roleDialog'));
+            .add(new RoleDialog('roleDialog'))
+
+            //Assignment Selection
+            .add(new AssignDialog('assignDialog'));
     }
         
     async onTurn(turnContext) {
@@ -159,7 +164,6 @@ class messageParser {
                 if (!txt && val){
 
                     if(val.Role != undefined){
-                        console.log(val);
                         user.profile.role = val.Role;
                         console.log(user.profile);
                         fileIO.insertProfile(user.profile);
@@ -176,7 +180,7 @@ class messageParser {
                                                 channelID);
                 
                 //List of BotCaptains available function plugins
-                let commands = ['task', 'remind', 'role']
+                let commands = ['task', 'remind', 'role', 'assign']
 
                 if(utterance[0] === "!" && commands.includes(utterance.slice(1)) && dialogTurnResult.status === DialogTurnStatus.empty){
                     //Start appropriate dialog

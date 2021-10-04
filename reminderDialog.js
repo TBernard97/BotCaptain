@@ -68,7 +68,7 @@ class ReminderDialog extends ComponentDialog {
 
     async promptForTime(step){
         step.values.date = step.result;
-        step.values.time = {}
+        step.values.time = {};
         return await step.prompt(GET_TIME_PROMPT, 'What time would you like this reminder to be sent?');
     }
 
