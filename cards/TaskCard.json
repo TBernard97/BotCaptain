@@ -38,18 +38,7 @@
             "style": "Compact",
             "value": "1",
             "choices": [
-                {
-                    "title": "Student name",
-                    "value": "Student role"
-                },
-                {
-                    "title": "Student name",
-                    "value": "Student role"
-                },
-                {
-                    "title": "Student name",
-                    "value": "Student role"
-                }
+    
             ]
         }
     ],

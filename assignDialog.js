@@ -53,7 +53,7 @@ class AssignDialog extends ComponentDialog {
 
     async buildCard(step){
         var task = step.values.task;
-        var task_id = step.values.task_id
+        var task_id = step.values.task_id;
         var profiles = jsonfile.readFileSync(`Resources/Classes/${step.values.profile.class}/profiles.json`);
         TaskCard["body"][0].id = task_id;
         TaskCard["body"][3].text = task.description;
@@ -61,17 +61,27 @@ class AssignDialog extends ComponentDialog {
         
         
         for (var user in profiles_list){
-
+            console.dir(user);
             var choices = TaskCard["body"][5].choices
             let equal = step.values.profile.team == profiles[profiles_list[user]].team;
             if(equal == true){
-                choices[user] = {"title": "", "value": ""};
-                choices[user].title = profiles[profiles_list[user]].nick;  
-                choices[user].value = profiles[profiles_list[user]].nick;
+                if(choices[user] != undefined){
+                    choices[user] = {"title": "", "value": ""};
+                    choices[user].title = profiles[profiles_list[user]].nick;  
+                    choices[user].value = profiles[profiles_list[user]].nick;
+                } else {
+                    var choiceObject = {"title": "", "value": ""};
+                    choiceObject.title = profiles[profiles_list[user]].nick; 
+                    choiceObject.value = profiles[profiles_list[user]].nick; 
+                    choices.push(choiceObject);
+                }
+                
+           
             }
       
-            
         }
+
+
 
 
         return await step.next();
@@ -87,9 +97,30 @@ class AssignDialog extends ComponentDialog {
     }
 
     async captureStudent(step){
-        console.dir(step.context.activity.value);
-        step.values.vote = step.context.activity.value;
-        return await step.next();
+        var profiles = jsonfile.readFileSync(`Resources/Classes/${step.values.profile.class}/profiles.json`);
+        let profiles_list = Object.keys(profiles);
+        
+        var user_nicks = [];
+        for (var user in profiles_list){
+            let equal = step.values.profile.team == profiles[profiles_list[user]].team;
+            if(equal == true){
+                user_nicks.push(profiles[profiles_list[user]].nick);
+            }
+      
+        }
+
+        if(step.context.activity.value != undefined){
+            console.dir(step.context.activity.value);
+            step.values.vote = step.context.activity.value;
+            return await step.next();
+        } else if(step.context.activity.text != undefined && user_nicks.includes(step.context.activity.text)){
+            step.values.vote = {"leaderSelection": `${step.context.activity.text}`};
+            return await step.next();
+        } else {
+            await step.context.sendActivity("Need a valid user.");
+            return await step.endDialog();
+        }
+    
     }
 
     async recordVote(step){
@@ -103,13 +134,14 @@ class AssignDialog extends ComponentDialog {
         
 
         if(voteTaskId != undefined && voteTaskId[`${student}`] != undefined){
+            
             voteTaskId[`${student}`].votes = voteTaskId[`${student}`].votes + 1; 
             jsonfile.writeFileSync(votePath, votes, {flags:'w'});
 
         } else if(voteTaskId != undefined && voteTaskId[`${student}`] === undefined) {
+            
             leaderVoteObject.votes = 1;
             voteTaskId[`${student}`] = leaderVoteObject;
-            console.dir(votes);
             jsonfile.writeFileSync(votePath, votes, {flags:'w'});
 
         } else {
@@ -117,11 +149,16 @@ class AssignDialog extends ComponentDialog {
             votes[`${step.values.task_id}`] = {};
             leaderVoteObject.votes = 1;
             votes[`${step.values.task_id}`][`${student}`] = leaderVoteObject;
-            console.dir(votes);
             jsonfile.writeFileSync(votePath, votes, {flags:'w'});
 
         }
+       
+        for(var choice in TaskCard["body"][5].choices){
+            console.log(choice);
+            TaskCard["body"][5].choices.pop(choice);
+        }
         xAPI_Handler.recordRoleAssignment(step.options.profile.email, step.options.profile.nick, student, step.values.task_id);
+        await step.context.sendActivity(`Voted for ${student} to lead ${step.values.task_id}`);
         return await step.endDialog();
     }
    
