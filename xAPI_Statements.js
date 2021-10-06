@@ -180,6 +180,62 @@ class xAPI_Statements {
         }
 
     }
+
+    async recordRoleAssignment(email,voter, leader, task){
+        if(config.xAPI.enabled == true){
+            var statement = new TinCan.Statement(
+                {
+                    actor: {
+                        objectType: "Agent",
+                        mbox: `mailto:${email}`,
+                    },
+                    verb: {
+                        id: "http://activitystrea.ms/schema/1.0/registered",                
+                        display: {
+                            "en-US": "Assigned"
+                        }, 
+                    },
+
+                    object: {
+                        id: config.xAPI.objectID,
+                        definition: { 
+                            name: {
+                                "en-US": `${leader}`
+                            },
+                            description: {
+                                "en-US":   `${voter} voted for ${leader} to lead ${task}.`
+                            },
+                            type: "http://id.tincanapi.com/activitytype/job-title"
+                        },
+                        objectType: "Activity"    
+                    }
+            
+                }
+            );
+
+            this.lrs.saveStatement(
+                statement,
+                {
+                    callback: function (err, xhr) {
+                        if (err !== null) {
+                            if (xhr !== null) {
+                                log.debug(`Failed to save statement: ${xhr.responseText} ${xhr.status }`);
+                                return;
+                            }
+            
+                            log.debug(`Failed to save statement: ${err}`);
+                            return;
+                        }
+            
+                        log.info("xAPI statment saved.")
+                    }
+                }
+            );
+        } else {
+            log.debug("xAPI Disabled in configuration.");
+        }
+
+    }
 }
 
 module.exports.xAPI_Statements = xAPI_Statements;

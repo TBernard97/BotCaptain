@@ -2,7 +2,7 @@ const { ComponentDialog, TextPrompt, WaterfallDialog, DialogTurnStatus} = requir
 const { CardFactory } = require('botbuilder');
 const taskId = 'taskDialog';
 const jsonfile = require('jsonfile');
-
+const xAPI = require('./xAPI_Statements.js');
 //Prompt for Task
 const { TaskPrompt } = require('./prompts/taskPrompt');
 const GET_TASK_PROMPT = 'taskPrompt';
@@ -99,6 +99,7 @@ class AssignDialog extends ComponentDialog {
         let student = step.values.vote.leaderSelection;
         let leaderVoteObject = {votes:0};
         let voteTaskId = votes[`${step.values.task_id}`];
+        let xAPI_Handler = new xAPI.xAPI_Statements;
         
 
         if(voteTaskId != undefined && voteTaskId[`${student}`] != undefined){
@@ -120,6 +121,7 @@ class AssignDialog extends ComponentDialog {
             jsonfile.writeFileSync(votePath, votes, {flags:'w'});
 
         }
+        xAPI_Handler.recordRoleAssignment(step.options.profile.email, step.options.profile.nick, student, step.values.task_id);
         return await step.endDialog();
     }
    

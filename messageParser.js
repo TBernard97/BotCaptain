@@ -193,7 +193,7 @@ class messageParser {
                 } 
 
                 
-                // //Allow user to cancel or start any dialog
+                // Allow user to cancel or start any dialog
                 if (utterance === 'cancel') {
                     if (dc.activeDialog) {
                         await dc.cancelAllDialogs();
