@@ -47,9 +47,7 @@
             "type": "Action.Submit",
             "title": "OK"
         }
-    ],
-    "backgroundImage": {
-        "horizontalAlignment": "Center"
-    }
+    ]
+
 }
 

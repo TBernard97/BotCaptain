@@ -84,6 +84,7 @@ class ProfileDialog extends ComponentDialog {
 
     async completeProfile(step){
         step.values.user.nick = step.result;
+        step.values.user.votes = {};
         return await step.endDialog(step.values.user);
     }
 

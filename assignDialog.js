@@ -6,11 +6,9 @@ const xAPI = require('./xAPI_Statements.js');
 //Prompt for Task
 const { TaskPrompt } = require('./prompts/taskPrompt');
 const GET_TASK_PROMPT = 'taskPrompt';
-//Prompt for Student
-// const { StudentPrompt } = require('./prompts/studentPrompt');
-// const GET_STUDENT_PROMPT = 'studentPrompt';
+//Import a card template
 const TaskCard = require('./cards/TaskCard.json');
-
+const { fileIO } = require('./fileIO.js');
 
 class AssignDialog extends ComponentDialog {
     
@@ -37,18 +35,29 @@ class AssignDialog extends ComponentDialog {
 
     async promptForTask(step){
         step.values.task = {};
-        step.values.profile = {};
-        step.values.profile = step.options.profile;
-        var tasks = jsonfile.readFileSync(`./Resources/Classes/${step.values.profile.class}/Teams/${step.values.profile.team}/tasks.json`);
+        
+        //Need to read profiles to get proper vote count
+        step.values.profileTable = jsonfile.readFileSync(`Resources/Classes/${step.options.profile.class}/profiles.json`);
+        step.values.profile = step.values.profileTable[`${step.options.profile.name}`];
+
+        var tasks = jsonfile.readFileSync(`Resources/Classes/${step.values.profile.class}/Teams/${step.values.profile.team}/tasks.json`);
         let task_list = Object.keys(tasks);
         return await step.prompt(GET_TASK_PROMPT, 'What task would you like to see?',task_list);
     }
 
     async captureTask(step){;
-        var tasks = jsonfile.readFileSync(`./Resources/Classes/${step.values.profile.class}/Teams/${step.values.profile.team}/tasks.json`);
+        var tasks = jsonfile.readFileSync(`Resources/Classes/${step.values.profile.class}/Teams/${step.values.profile.team}/tasks.json`);
         step.values.task_id = step.result.value;
-        step.values.task = tasks[`${step.result.value}`]
-        return await step.next();
+        step.values.task = tasks[`${step.result.value}`];
+
+        //If student already for a leader, don't even bother with remaining portions of dialog
+        if(step.values.profile.votes[`${step.values.task_id}`] === true){
+            await step.context.sendActivity("You already voted for someone to lead this task");
+            return await step.endDialog(); 
+        } else{
+            return await step.next();
+        }
+
     }
 
     async buildCard(step){
@@ -61,7 +70,6 @@ class AssignDialog extends ComponentDialog {
         
         
         for (var user in profiles_list){
-            console.dir(user);
             var choices = TaskCard["body"][5].choices
             let equal = step.values.profile.team == profiles[profiles_list[user]].team;
             if(equal == true){
@@ -80,9 +88,6 @@ class AssignDialog extends ComponentDialog {
             }
       
         }
-
-
-
 
         return await step.next();
     }
@@ -110,7 +115,6 @@ class AssignDialog extends ComponentDialog {
         }
 
         if(step.context.activity.value != undefined){
-            console.dir(step.context.activity.value);
             step.values.vote = step.context.activity.value;
             return await step.next();
         } else if(step.context.activity.text != undefined && user_nicks.includes(step.context.activity.text)){
@@ -134,7 +138,6 @@ class AssignDialog extends ComponentDialog {
         
 
         if(voteTaskId != undefined && voteTaskId[`${student}`] != undefined){
-            
             voteTaskId[`${student}`].votes = voteTaskId[`${student}`].votes + 1; 
             jsonfile.writeFileSync(votePath, votes, {flags:'w'});
 
@@ -152,13 +155,17 @@ class AssignDialog extends ComponentDialog {
             jsonfile.writeFileSync(votePath, votes, {flags:'w'});
 
         }
-       
+        
+        //Remove current user from choices when completed (workaround due to state being held on card import)
         for(var choice in TaskCard["body"][5].choices){
-            console.log(choice);
             TaskCard["body"][5].choices.pop(choice);
         }
+
         xAPI_Handler.recordRoleAssignment(step.options.profile.email, step.options.profile.nick, student, step.values.task_id);
+        step.values.profile.votes[`${step.values.task_id}`] = true;
+        fileIO.insertProfile(step.values.profile);
         await step.context.sendActivity(`Voted for ${student} to lead ${step.values.task_id}`);
+        
         return await step.endDialog();
     }
    
