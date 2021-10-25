@@ -42,15 +42,15 @@ class AssignDialog extends ComponentDialog {
 
         var tasks = jsonfile.readFileSync(`Resources/Classes/${step.values.profile.class}/Teams/${step.values.profile.team}/tasks.json`);
         let task_list = Object.keys(tasks);
-        return await step.prompt(GET_TASK_PROMPT, 'What task would you like to see?',task_list);
+        return await step.prompt(GET_TASK_PROMPT, 'What task would you like to assign?',task_list);
     }
 
-    async captureTask(step){;
+    async captureTask(step){
         var tasks = jsonfile.readFileSync(`Resources/Classes/${step.values.profile.class}/Teams/${step.values.profile.team}/tasks.json`);
         step.values.task_id = step.result.value;
         step.values.task = tasks[`${step.result.value}`];
 
-        //If student already for a leader, don't even bother with remaining portions of dialog
+        //If student already voted for a leader, don't even bother with remaining portions of dialog
         if(step.values.profile.votes[`${step.values.task_id}`] === true){
             await step.context.sendActivity("You already voted for someone to lead this task");
             return await step.endDialog(); 
@@ -114,6 +114,7 @@ class AssignDialog extends ComponentDialog {
       
         }
 
+        //If use enters text instead of using card, ensure user is valid
         if(step.context.activity.value != undefined){
             step.values.vote = step.context.activity.value;
             return await step.next();

@@ -14,8 +14,6 @@ describe("ProfileDialog tests cases", function (){
             const dc = await dialogs.createContext(context);
             let userID = context.activity.from.id;
             let channelID = context.activity.channelId;
-            console.log(`UserID: ${userID}, ChannelID: ${channelID}`)
-            // jsonfile.writeFileSync('./dialogID.json', activityId, {flag: 'w'})
             fileIO.setDialog(channelID, userID);
             const results = await dc.continueDialog();
             if(results.status === DialogTurnStatus.empty){

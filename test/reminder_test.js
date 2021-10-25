@@ -39,7 +39,7 @@ describe("ReminderDialog test cases", function(){
     });
 
 
-    it("should fail on date to low", async() => {
+    it("should fail on date too low", async() => {
         const conversationState = new ConversationState(new MemoryStorage());
         const userState = new UserState(new MemoryStorage());
         const DIALOG_STATE_PROPERTY = 'dialogState';
@@ -75,7 +75,7 @@ describe("ReminderDialog test cases", function(){
         .assertReply('Answer with a date like 1978-01-25 or say "cancel".')
     });
 
-    it("should fail on date to high", async() => {
+    it("should fail on date too high", async() => {
         const conversationState = new ConversationState(new MemoryStorage());
         const userState = new UserState(new MemoryStorage());
         const DIALOG_STATE_PROPERTY = 'dialogState';
