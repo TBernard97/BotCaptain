@@ -1,0 +1,66 @@
+{
+    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+    "type": "AdaptiveCard",
+    "version": "1.3",
+    "body": [
+        {
+            "type": "RichTextBlock",
+            "id":"Assign",
+            "inlines": [
+                {
+                    "type": "TextRun",
+                    "text": "Please submit progress report for one of the given task"
+                }
+            ],
+            "horizontalAlignment": "Center"
+        },
+       
+        {
+            "type": "TextBlock",
+            "text": "What task would you like to submit a report for?",
+            "wrap": true
+        },
+        {
+            "type": "Input.ChoiceSet",
+            "id": "taskSelection",
+            "style": "Compact",
+            "value": "1",
+            "choices": [
+    
+            ]
+        },
+        
+        {
+            "type": "TextBlock",
+            "text": "What is the progress on this task?",
+            "wrap": true
+        },
+        {
+            "type": "Input.ChoiceSet",
+            "id": "progressSelection",
+            "style": "Compact",
+            "value": "1",
+            "choices": [
+                {
+                    "title": "completed",
+                    "value": "completed"
+                },
+                {
+                    "title": "in progress",
+                    "value": "in progress"
+                },
+                {
+                    "title": "no progress",
+                    "value": "no progress"
+                }
+            ]
+        }
+    ],
+    "actions": [
+        {
+            "type": "Action.Submit",
+            "title": "OK"
+        }
+    ]
+
+}

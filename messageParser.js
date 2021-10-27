@@ -33,6 +33,8 @@ const { ReminderDialog } = require('./reminderDialog');
 const { RoleDialog } = require('./roleDialog');
 //Task Assignment Dialog
 const { AssignDialog } = require('./assignDialog');
+//Task Assignment Dialog
+const { MinutesDialog } = require('./minutesDialog');
 //Module for pushing xAPI statements
 const { xAPI_Statements } = require('./xAPI_Statements');
 
@@ -85,7 +87,10 @@ class messageParser {
             .add(new RoleDialog('roleDialog'))
 
             //Assignment Selection
-            .add(new AssignDialog('assignDialog'));
+            .add(new AssignDialog('assignDialog'))
+
+            //Meeting Minutes (task progress report)
+            .add(new MinutesDialog('minutesDialog'));
     }
         
     async onTurn(turnContext) {
@@ -163,11 +168,31 @@ class messageParser {
                 //Check to see if message is coming from card
                 if (!txt && val){
 
+                    // Check for existence of role selection entry and enter data into user's profile
                     if(val.Role != undefined){
                         user.profile.role = val.Role;
                         fileIO.insertProfile(user.profile);
                         xAPI_Handler.recordRoleSelection(user.profile.email, user.profile.role);
                     }
+
+                    // Check for existence of meeting minutes report and enter students entry into table for team
+                    if(val.taskSelection != undefined && val.progressSelection != undefined){
+                        var minutesTablePath = `Resources/Classes/${user.profile.class}/Teams/${user.profile.team}/minutes.json`
+                        var meetingMinutes = jsonfile.readFileSync(minutesTablePath);
+                        let studentMinutes = meetingMinutes[user.profile.nick];
+
+                        if(studentMinutes != undefined){
+                            meetingMinutes[user.profile.nick][val.taskSelection] = val.progressSelection;
+                            jsonfile.writeFileSync(minutesTablePath, meetingMinutes);
+                        } else{
+                            meetingMinutes[user.profile.nick] = {};
+                            meetingMinutes[user.profile.nick][val.taskSelection] = val.progressSelection;
+                            jsonfile.writeFileSync(minutesTablePath, meetingMinutes);
+                        }
+
+                    }
+
+                    
                    
                 }
 
@@ -179,7 +204,7 @@ class messageParser {
                                                 channelID);
                 
                 //List of BotCaptains available function plugins
-                let commands = ['task', 'remind', 'role', 'assign']
+                let commands = ['task', 'remind', 'role', 'assign', 'minutes']
 
                 if(utterance[0] === "!" && commands.includes(utterance.slice(1)) && dialogTurnResult.status === DialogTurnStatus.empty){
                     //Start appropriate dialog
