@@ -25,6 +25,8 @@ const DIALOG_STATE_PROPERTY = 'dialogState';
 const { EmailDialog } = require('./emailDialog');
 //Profile Dialog
 const { ProfileDialog } = require('./profileDialog');
+//Quiz Dialog
+const { QuizDialog } = require('./quizDialog');
 //Task Dialog
 const { TaskDialog } = require('./taskDialog');
 //Reminder Dialog 
@@ -155,7 +157,7 @@ class messageParser {
                                                 channelID);
                 
                 //List of BotCaptains available function plugins
-                let commands = ['task', 'remind']
+                let commands = ['task', 'remind','quiz']
 
                 if(utterance[0] === "!" && commands.includes(utterance.slice(1)) && dialogTurnResult.status === DialogTurnStatus.empty){
                     //Start appropriate dialog
