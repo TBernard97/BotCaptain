@@ -3,14 +3,14 @@
         "date":"04/20/2022",
         "question":"Which of the following is an extension used heavily in distributed databases?",
         "answers":[ "json", "xlsx", "csv" ],
-        "correct answer":"json"
+        "correctAnswer":"json"
     },
     
     "memes": {
         "date":"04/20/2022",
         "question":"Which of the following is a meme worthy of the highest praise?",
         "answers":[ "sheesh", "yolo", "my day is ruined" ],
-        "correct answer":"sheesh"
+        "correctAnswer":"sheesh"
     }
     
 

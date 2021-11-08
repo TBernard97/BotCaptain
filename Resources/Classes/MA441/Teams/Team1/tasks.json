@@ -1,1 +1,12 @@
-{"week1":{"date":"04/20/2021","description":"Choose team members for something","status":"not completed"},"tutorial":{"date":"04/20/2021","description":"This is an example task","status":"completed"}}
+{
+    "week1": {
+        "date": "04/20/2021",
+        "description": "Choose team members for something",
+        "status": "not completed"
+    },
+    "tutorial": {
+        "date": "04/20/2021",
+        "description": "This is an example task",
+        "status": "completed"
+    }
+}

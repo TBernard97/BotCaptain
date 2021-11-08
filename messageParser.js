@@ -31,6 +31,9 @@ const { TaskDialog } = require('./taskDialog');
 const { ReminderDialog } = require('./reminderDialog');
 //Module for pushing xAPI statements
 const { xAPI_Statements } = require('./xAPI_Statements');
+//Quiz Dialog
+const { QuizDialog } = require('./quizDialog');
+
 
 
 //Userinfo property
@@ -74,7 +77,10 @@ class messageParser {
             .add(new TaskDialog('taskDialog'))
 
             //Reminder 
-            .add(new ReminderDialog('remindDialog'));
+            .add(new ReminderDialog('remindDialog'))
+
+            //Quiz
+            .add(new QuizDialog('quizDialog'));
     }
         
     async onTurn(turnContext) {
@@ -155,7 +161,7 @@ class messageParser {
                                                 channelID);
                 
                 //List of BotCaptains available function plugins
-                let commands = ['task', 'remind']
+                let commands = ['task', 'remind','quiz']
 
                 if(utterance[0] === "!" && commands.includes(utterance.slice(1)) && dialogTurnResult.status === DialogTurnStatus.empty){
                     //Start appropriate dialog
