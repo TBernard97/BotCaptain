@@ -1,12 +1,11 @@
 const { ComponentDialog, TextPrompt, WaterfallDialog} = require('botbuilder-dialogs');
 const reminderId = 'reminderDialog';
-const fs = require('fs');
 const jsonfile = require('jsonfile');
 //Module for scheduling emails
 const {scheduler} = require('./scheduler.js');
 //Prompt for Date
 const { DatePrompt } = require('./prompts/datePrompt');
-const GET_DATE_PROMPT = 'emailPrompt';
+const GET_DATE_PROMPT = 'datePrompt';
 //Prompt for Time
 const { TimePrompt } = require('./prompts/timePrompt');
 const GET_TIME_PROMPT = 'timePrompt'

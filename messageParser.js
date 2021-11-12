@@ -190,6 +190,8 @@ class messageParser {
                             jsonfile.writeFileSync(minutesTablePath, meetingMinutes);
                         }
 
+                        xAPI_Handler.recordMeetingMinutes(user.profile.email, val.taskSelection, val.progressSelection);
+
                     }
 
                     
