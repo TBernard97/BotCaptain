@@ -111,7 +111,7 @@ describe("Task Assign test cases", function(){
         .send("week1")
         .assertReply(undefined)
         .send('Blah')
-        .assertReply('Need a valid user.')
+        .assertReply('Need a valid user. Ending dialog.')
     });
 
 });

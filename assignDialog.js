@@ -37,7 +37,7 @@ class AssignDialog extends ComponentDialog {
     async promptForTask(step){
         step.values.task = {};
         
-        //Need to read profiles to get proper vote count. Profile passed to function may not have proper
+        //Need to read profiles to get proper vote count. Profile passed to function may not have proper vote count.
         step.values.profileTable = jsonfile.readFileSync(`Resources/Classes/${step.options.profile.class}/profiles.json`);
         step.values.profile = step.values.profileTable[`${step.options.profile.name}`];
 
@@ -73,12 +73,13 @@ class AssignDialog extends ComponentDialog {
 
         TaskCard["body"][0].id = step.values.task_id;
         TaskCard["body"][3].text = step.values.task.description;
+        // Remove users from old state (accomodation for card import)
+        TaskCard["body"][5].choices.length = 0;
         
-        
+        // Enumerate over each user in callers team and add to choices in card
         for (var user in step.values.profileNamesList){
             var choices = TaskCard["body"][5].choices;
-            let equal = step.values.profile.team == step.values.profileTable[step.values.profileNamesList[user]].team;
-            if(equal == true){
+            if(step.values.profile.team == step.values.profileTable[step.values.profileNamesList[user]].team){
                 if(choices[user] != undefined){
                     choices[user] = {"title": "", "value": ""};
                     choices[user].title = step.values.profileTable[step.values.profileNamesList[user]].nick;  
@@ -111,8 +112,7 @@ class AssignDialog extends ComponentDialog {
         
         var user_nicks = [];
         for (var user in step.values.profileNamesList){
-            let equal = step.values.profile.team == step.values.profileTable[step.values.profileNamesList[user]].team;
-            if(equal == true){
+            if(step.values.profile.team == step.values.profileTable[step.values.profileNamesList[user]].team){
                 user_nicks.push(step.values.profileTable[step.values.profileNamesList[user]].nick);
             }
       
@@ -160,9 +160,8 @@ class AssignDialog extends ComponentDialog {
         }
         
         // Remove current user from choices when completed (workaround due to state being held on card import)
-        for(var choice in TaskCard["body"][5].choices){
-            TaskCard["body"][5].choices.pop(choice);
-        }
+        TaskCard["body"][5].choices.length = 0;
+        
 
         xAPI_Handler.recordRoleAssignment(step.options.profile.email, step.options.profile.nick, step.values.vote.leaderSelection, step.values.task_id);
         step.values.profile.votes[`${step.values.task_id}`] = true;
