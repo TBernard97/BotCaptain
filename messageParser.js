@@ -144,7 +144,7 @@ class messageParser {
                 else if(dialogTurnResult.status === DialogTurnStatus.complete) {
                     user.profile = dialogTurnResult.result;
                     user.profile.name = turnContext.activity.from.name;
-                    fileIO.buildDB(user.profile.class);
+                    fileIO.buildDB(user.profile.class, user.profile.team);
                     this.userInfoAccessor.set(turnContext, user);
                     fileIO.insertProfile(user.profile);
 
@@ -206,7 +206,7 @@ class messageParser {
                                                 channelID);
                 
                 //List of BotCaptains available function plugins
-                let commands = ['task', 'remind', 'role', 'assign', 'minutes']
+                let commands = ['task', 'remind', 'role', 'assign', 'minutes'];
 
                 if(utterance[0] === "!" && commands.includes(utterance.slice(1)) && dialogTurnResult.status === DialogTurnStatus.empty){
                     //Start appropriate dialog
@@ -229,9 +229,6 @@ class messageParser {
                     }
                 }
             
-                //Make directories
-                // fileIO.makeDirectory(`./logs/channels/${channelID}`);
-                // fileIO.makeDirectory(`./logs/channels/${channelID}/${name}`);
 
                 //Record turnContext data
                 fileIO.logContext(turnContext, user.profile);
