@@ -92,13 +92,14 @@ class QuizDialog extends ComponentDialog {
         console.log(step.values.quiz.correctAnswer);
         if(step.values.useranswer == step.values.quiz.correctAnswer){
         await step.context.sendActivity("correct")
-        this.xAPI_Handler.recordQuiz(step.values.profile.email);
+        this.xAPI_Handler.recordQuizPass(step.values.profile.email);
         await step.context.sendActivity(`Quiz result will be sent to:  ${step.values.profile.email}`);
         step.values.message=`${step.values.quizName} Quiz result: Congrats! you studied!`;
         }
         
         else{
         await step.context.sendActivity(`wrong response, correct answer = ${step.values.quiz.correctAnswer}`  );
+        this.xAPI_Handler.recordQuizFail(step.values.profile.email);
         step.values.message=`${step.values.quizName} Quiz result: I am disappointed in you. Study harder`;
         }
         console.log(step.values.quiz);

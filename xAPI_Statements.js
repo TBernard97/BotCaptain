@@ -181,9 +181,10 @@ async recordSchedule(email){
     }
 }
 
-async recordQuiz(email){
+async recordQuizPass(email){
     
     if(config.xAPI.enabled == true){
+        if(step.values.useranswer == step.values.quiz.correctAnswer)
         var statement = new TinCan.Statement(
             {
                 actor: {
@@ -205,6 +206,61 @@ async recordQuiz(email){
                         },
                         description: {
                             "en-US": "Student passed the quiz."
+                        },
+                        type: "http://adlnet.gov/expapi/activities/assessment"
+                    },
+                    objectType: "Activity"    
+                }
+        
+            }
+        );
+
+        this.lrs.saveStatement(
+            statement,
+            {
+                callback: function (err, xhr) {
+                    if (err !== null) {
+                        if (xhr !== null) {
+                            log.debug(`Failed to save statement: ${xhr.responseText} ${xhr.status }`);
+                            return;
+                        }
+        
+                        log.debug(`Failed to save statement: ${err}`);
+                        return;
+                    }
+        
+                    log.info("xAPI statment saved.")
+                }
+            }
+        );
+    } else {
+        log.debug("xAPI Disabled in configuration.");
+    }
+}
+async recordQuizFail(email){
+    
+    if(config.xAPI.enabled == true){
+        var statement = new TinCan.Statement(
+            {
+                actor: {
+                    objectType: "Agent",
+                    mbox: `mailto:${email}`,
+                },
+                verb: {
+                    id: "https://w3id.org/xapi/dod-isd/verbs/failed",                
+                    display: {
+                        "en-US": "Failed"
+                    }, 
+                },
+
+                object: {
+                    id: config.xAPI.objectID,
+                    definition: { 
+                        name: {
+                            "en-US": "Quiz Failed"
+                        },
+                        description: {
+                            "en-US": "Student Failed the quiz."
                         },
                         type: "http://adlnet.gov/expapi/activities/assessment"
                     },
