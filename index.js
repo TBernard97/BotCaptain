@@ -13,6 +13,7 @@ var { messageParser } = require('./messageParser'); //Need to finish this before
 // See https://aka.ms/bot-services to learn more about the different parts of a bot.
 const { BotFrameworkAdapter, MemoryStorage, ConversationState, UserState } = require('botbuilder');
 const { BotConfiguration } = require('botframework-config'); // Import required bot configuration.
+const { scheduler } = require('./scheduler');
 // Read botFilePath and botFileSecret from .env file
 const ENV_FILE = path.join(__dirname, '.env'); // Note: Ensure you have a .env file and include botFilePath and botFileSecret.
 const env = require('dotenv').config({path: ENV_FILE});
@@ -20,6 +21,7 @@ const env = require('dotenv').config({path: ENV_FILE});
 const DEV_ENVIRONMENT = 'development'; // bot endpoint name as defined in .bot file
 const BOT_CONFIGURATION = (process.env.NODE_ENV || DEV_ENVIRONMENT); // bot name as defined in .bot file
 const BOT_FILE = path.join(__dirname, (process.env.botFilePath || '')); // .bot file path
+
 
 
 // Create HTTP server
@@ -69,6 +71,7 @@ adapter.onTurnError = async (context, error) => {
 };
 
 // Automatic functionalities here
+scheduler.uploadSchedule({ minutes: 5, }, 'Resources/Classes/MA441/messages.json', 'messages.json' )
 
 // Listen for incoming requests.
 server.post('/api/messages', (req, res) => {

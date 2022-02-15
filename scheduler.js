@@ -1,8 +1,10 @@
 var schedule = require('node-schedule');
 var nodemailer = require('nodemailer');
 var jsonfile = require('jsonfile');
+const  { s3Handler } = require('./s3Handler');
 const { log } = require('./logger');
 const config = jsonfile.readFileSync('./config.json')
+const { ToadScheduler, SimpleIntervalJob, Task } = require('toad-scheduler')
 class scheduler {
     
     //Schedule email reminders
@@ -57,6 +59,17 @@ class scheduler {
             }
         );
     }
+
+    static uploadSchedule(interval, file, filename){
+        const scheduler = new ToadScheduler();
+        const task = new Task('file upload', () => { s3Handler.uploadFile(file, 'text/plain', `/${filename}`)  })
+        const job = new SimpleIntervalJob(interval, task)
+        scheduler.addSimpleIntervalJob(job)
+
+        // when stopping your app
+        scheduler.stop()
+    }
+
 }
 
 exports.scheduler = scheduler;
