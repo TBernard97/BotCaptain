@@ -66,8 +66,6 @@ class scheduler {
         const job = new SimpleIntervalJob(interval, task)
         scheduler.addSimpleIntervalJob(job)
 
-        // when stopping your app
-        scheduler.stop()
     }
 
 }
