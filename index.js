@@ -14,6 +14,7 @@ var { messageParser } = require('./messageParser'); //Need to finish this before
 const { BotFrameworkAdapter, MemoryStorage, ConversationState, UserState } = require('botbuilder');
 const { BotConfiguration } = require('botframework-config'); // Import required bot configuration.
 const { scheduler } = require('./scheduler');
+const { fileIO } = require('./fileIO');
 // Read botFilePath and botFileSecret from .env file
 const ENV_FILE = path.join(__dirname, '.env'); // Note: Ensure you have a .env file and include botFilePath and botFileSecret.
 const env = require('dotenv').config({path: ENV_FILE});
@@ -71,7 +72,13 @@ adapter.onTurnError = async (context, error) => {
 };
 
 // Automatic functionalities here
-scheduler.uploadSchedule({ minutes: 5, }, 'Resources/Classes/MA441/messages.json', 'messages.json' )
+const classList = fileIO.readDirectories('Resources/Classes')
+for ( var i in classList ){
+    let classNumber = classList[i]
+    let classDirectory = `Resources/Classes/${classNumber}/messages.json`
+    scheduler.uploadSchedule({ minutes: 5, }, classDirectory, 'messages.json' )
+}
+
 
 // Listen for incoming requests.
 server.post('/api/messages', (req, res) => {

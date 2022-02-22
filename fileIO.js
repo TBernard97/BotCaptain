@@ -19,6 +19,16 @@ class fileIO{
         }
     }
 
+    //Method for reading sub-directories
+    static readDirectories(path){
+
+        const getDirectories = source =>
+        fs.readdirSync(source, { withFileTypes: true })
+            .filter(dirent => dirent.isDirectory())
+            .map(dirent => dirent.name)
+        return getDirectories(path)
+    }
+
     //Method for writing to files
     static writeFile(path, text){
         //

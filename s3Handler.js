@@ -17,7 +17,6 @@ class s3Handler {
     
     static uploadFile(file, contentType, serverPath, filename)  {
 
-        
         if (!filename) {
          filename = serverPath.split('/').pop()
         }
@@ -33,6 +32,8 @@ class s3Handler {
                 ContentDisposition: `attachment; filename=${filename}`,
             }).promise()
         });
+
+
 
     }
 
