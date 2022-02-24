@@ -2,6 +2,7 @@ const { fileIO } = require('./fileIO');
 const jsonfile = require('jsonfile');
 const fs = require('fs');
 const { ActivityTypes, MessageFactory, TurnContext } = require('botbuilder');
+const { profileAccessor } = require('./profileAccessor');
 
 // cassandra database
 const CassandraService = require('./service/CassandraService');
@@ -105,11 +106,10 @@ class messageParser {
         if (turnContext.activity.type === ActivityTypes.Message) {
             //Create user object
             const user = await this.userInfoAccessor.get(turnContext, {});
-            
             //Create dialog controller
             const dc = await this.dialogs.createContext(turnContext);
             const dialogTurnResult =  await dc.continueDialog();
-            
+            //console.log(user.profile);
             //If user profile does not exist in memory start dialog
             if(!user.profile) {
 
@@ -164,7 +164,8 @@ class messageParser {
             
             //If user profile is present grant access to full functionality
             else {
-
+                
+                 
                 //Check to see if message is coming from card
                 if (!txt && val){
 
@@ -215,8 +216,15 @@ class messageParser {
                     fileIO.setDialog(channelID, userID);
                     log.info(`[INFO] User ${user} initiated a command.`);
                     await dc.beginDialog(`${dialog}`, user);
+                    
                         
                 } 
+                
+                if(dialogTurnResult.status === DialogTurnStatus.complete){
+                    user.profile = dialogTurnResult.result;
+                    this.userInfoAccessor.set(turnContext, user);
+                    
+                }
 
                 
                 // Allow user to cancel or start any dialog
@@ -256,7 +264,9 @@ class messageParser {
         await this.userState.saveChanges(turnContext);
         await this.conversationState.saveChanges(turnContext);
     }
-
+    static writeToMemory(turnContext,user){
+    this.userInfoAccessor.set(turnContext, user);
+        }
 }
 
 module.exports.messageParser = messageParser;
