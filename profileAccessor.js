@@ -14,15 +14,28 @@ class profileAccessor{
     static profileUpdate(profile,key,val){
         //Update profile in Dialog memory
         let user = {...profile};
+        
         user[`${key}`]=val;
         
         console.log(user);
         //Update profile in profiles.json
         fileIO.insertProfile(user);
-        //Update profile in messageParser memory
+        //Used to update messageParser's profile through returning step.values.profile in dialogs
+        return user;
+    }
+    static profileVoteUpdate(profile,task,val){
+        //Update profile in Dialog memory
+        let user = {...profile};
+        user.votes[`${task}`]=val;
+        
+        console.log(user);
+        //Update profile in profiles.json
+        fileIO.insertProfile(user);
+        //Used to update messageParser's profile through returning step.values.profile in dialogs
         return user;
 
     }
+    
 }
 
 module.exports.profileAccessor= profileAccessor;

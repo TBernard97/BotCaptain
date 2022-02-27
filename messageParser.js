@@ -137,7 +137,7 @@ class messageParser {
                 }
 
                 else if(dialogTurnResult.status === DialogTurnStatus.empty) {
-                    log.info(`Profile for ${name} does not apear to be stored in Casandra DB}`);
+                    log.info(`Profile for ${name} does not appear to be stored in Casandra DB}`);
                     fileIO.setDialog(channelID, userID);
                     await dc.beginDialog('profileDialog');
                 } 
