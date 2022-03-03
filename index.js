@@ -76,7 +76,7 @@ const classList = fileIO.readDirectories('Resources/Classes')
 for ( var i in classList ){
     let classNumber = classList[i]
     let classDirectory = `Resources/Classes/${classNumber}/messages.json`
-    scheduler.uploadSchedule({ minutes: 5, }, classDirectory, 'messages.json' )
+    scheduler.uploadSchedule({ minutes: 1, }, classDirectory, classDirectory, 'messages.json' )
 }
 
 

@@ -60,9 +60,9 @@ class scheduler {
         );
     }
 
-    static uploadSchedule(interval, file, filename){
+    static uploadSchedule(interval, file, serverPath, filename){
         const scheduler = new ToadScheduler();
-        const task = new Task('file upload', () => { s3Handler.uploadFile(file, 'text/plain', `/${filename}`)  })
+        const task = new Task('file upload', () => { s3Handler.uploadFile(file, 'text/plain', serverPath, `${filename}`)  })
         const job = new SimpleIntervalJob(interval, task)
         scheduler.addSimpleIntervalJob(job)
 
