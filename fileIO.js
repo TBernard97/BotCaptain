@@ -2,7 +2,7 @@ var fs = require('fs');
 var crypto = require('crypto')
 const { log } = require('./logger')
 var jsonfile = require('jsonfile');
-const config = jsonfile.readFileSync('./config.json')
+const config = jsonfile.readFileSync('../config.json')
 
 class fileIO{
 
