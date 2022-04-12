@@ -1,6 +1,6 @@
 const { DateTimePrompt } = require('botbuilder-dialogs');
-const { fileIO } = require('../../fileIO')
-const { log } = require('../../logger')
+const { fileIO } = require('../../../src/fileIO')
+const { log } = require('../../../src/logger')
 // var Recognizers = require('@microsoft/recognizers-text-suite');
 // var myCulture = Recognizers.Culture.English;
 

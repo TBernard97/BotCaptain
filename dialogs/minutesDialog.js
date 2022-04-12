@@ -5,7 +5,7 @@ const minutesId = 'minutesDialog';
 const jsonfile = require('jsonfile');
 
 
-const MinutesCard = require('./cards/MinutesCard.json');
+const MinutesCard = require('../cards/MinutesCard.json');
 
 
 class MinutesDialog extends ComponentDialog {

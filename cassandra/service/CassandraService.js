@@ -4,7 +4,7 @@ const ProfileByEmailDAO = require('../dao/profileByEmailDao');
 const TaskByTeamDAO = require('../dao/taskByTeamDao');
 const MessageByBadWordDAO = require('../dao/messageByBadWordDao');
 const MessageByUserDAO = require('../dao/messageByUserDao');
-const config = require('../config.json');
+const config = require('../../config.json');
 
 
 class CassandraService {

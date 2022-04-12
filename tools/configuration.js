@@ -1,6 +1,6 @@
 const prompt = require('prompt');
 const jsonfile = require('jsonfile');
-const { log } = require('./logger');
+const { log } = require('../src/logger');
 
 var schema = {
     properties: {

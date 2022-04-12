@@ -1,8 +1,8 @@
 const { ConversationState, MemoryStorage, TestAdapter } = require("botbuilder");
 const{ DialogSet, DialogTurnStatus } = require("botbuilder-dialogs");
-const { ProfileDialog } = require('../profileDialog');
+const { ProfileDialog } = require('../dialogs/profileDialog');
 const jsonfile = require('jsonfile');
-const  { fileIO } = require('../fileIO')
+const  { fileIO } = require('../src/fileIO')
 describe("ProfileDialog tests cases", function (){
     this.timeout(5000);
     it("should call ProfileDialog when wake word comes up", async () => {

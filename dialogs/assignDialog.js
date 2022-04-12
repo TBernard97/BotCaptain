@@ -6,9 +6,9 @@ const jsonfile = require('jsonfile');
 const { TaskPrompt } = require('./prompts/taskPrompt');
 const GET_TASK_PROMPT = 'taskPrompt';
 //Import a card template
-const TaskCard = require('./cards/TaskCard.json');
-const { fileIO } = require('./fileIO.js');
-const { xAPI_Statements } = require('./xAPI_Statements.js');
+const TaskCard = require('../cards/TaskCard.json');
+const { fileIO } = require('../src/fileIO.js');
+const { xAPI_Statements } = require('../src/xAPI_Statements.js');
 const xAPI_Handler = new xAPI_Statements();
 
 class AssignDialog extends ComponentDialog {

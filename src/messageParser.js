@@ -4,37 +4,37 @@ const fs = require('fs');
 const { ActivityTypes, MessageFactory, TurnContext } = require('botbuilder');
 
 // cassandra database
-const CassandraService = require('./service/CassandraService');
+const CassandraService = require('../cassandra/service/CassandraService');
 const cassandra = require('cassandra-driver');
 
 // for hashing userId for cassandra database
 var crypto = require('crypto');
 
 //data structure for chat messages
-const MessageQueue = require("./service/MessageQueue");
-const Message = require("./model/messageByUser");
+const MessageQueue = require("../cassandra/service/MessageQueue");
+const Message = require("../cassandra/model/messageByUser");
 
 // config file
-const config = require('./config.json');
+const config = require('../config.json');
 
 //Dialog modules and properties
 const { DialogSet, WaterfallDialog, Dialog, DialogTurnStatus } = require('botbuilder-dialogs');
 const DIALOG_STATE_PROPERTY = 'dialogState';
 
 //Email Dialog !Only for testing really. Trying to phase out
-const { EmailDialog } = require('./emailDialog');
+const { EmailDialog } = require('../dialogs/emailDialog');
 //Profile Dialog
-const { ProfileDialog } = require('./profileDialog');
+const { ProfileDialog } = require('../dialogs/profileDialog');
 //Task Dialog
-const { TaskDialog } = require('./taskDialog');
+const { TaskDialog } = require('../dialogs/taskDialog');
 //Reminder Dialog 
-const { ReminderDialog } = require('./reminderDialog');
+const { ReminderDialog } = require('../dialogs/reminderDialog');
 //Role Selection Dialog
-const { RoleDialog } = require('./roleDialog');
+const { RoleDialog } = require('../dialogs/roleDialog');
 //Task Assignment Dialog
-const { AssignDialog } = require('./assignDialog');
+const { AssignDialog } = require('../dialogs/assignDialog');
 //Task Assignment Dialog
-const { MinutesDialog } = require('./minutesDialog');
+const { MinutesDialog } = require('../dialogs/minutesDialog');
 //Module for pushing xAPI statements
 const { xAPI_Statements } = require('./xAPI_Statements');
 

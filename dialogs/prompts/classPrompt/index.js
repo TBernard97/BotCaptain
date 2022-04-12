@@ -1,7 +1,7 @@
 const { TextPrompt } = require('botbuilder-dialogs');
 const fs = require('fs');
-const { fileIO } = require('../../fileIO')
-const { log } = require('../../logger')
+const { fileIO } = require('../../../src/fileIO')
+const { log } = require('../../../src/logger')
 
 module.exports.ClassPrompt = class ClassPrompt extends TextPrompt {
     constructor(dialogId){

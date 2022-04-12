@@ -1,8 +1,8 @@
 const vaildator = require('email-validator');
 const { TextPrompt } = require('botbuilder-dialogs');
-const { fileIO } = require('../../fileIO')
-const { channelValidation } = require('../../channelValidation');
-const { log } = require('../../logger');
+const { fileIO } = require('../../../src/fileIO')
+const { channelValidation } = require('../../../src/channelValidation');
+const { log } = require('../../../src/logger');
 
 module.exports.EmailPrompt = class EmailPrompt extends TextPrompt {
     constructor(dialogId) {

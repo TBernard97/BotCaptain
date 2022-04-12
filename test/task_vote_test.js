@@ -1,7 +1,7 @@
 const { ConversationState, MemoryStorage, TestAdapter, UserState } = require("botbuilder");
 const{ DialogSet, DialogTurnStatus } = require("botbuilder-dialogs");
-const { AssignDialog } = require('../assignDialog');
-const { fileIO } = require('../fileIO');
+const { AssignDialog } = require('../dialogs/assignDialog');
+const { fileIO } = require('../src/fileIO');
 describe("Task Assign test cases", function(){
     this.timeout(5000);
 

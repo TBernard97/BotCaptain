@@ -1,6 +1,6 @@
 const { CardFactory } = require('botbuilder');
 const { ComponentDialog,  WaterfallDialog } = require('botbuilder-dialogs');
-const AdaptiveCard = require('./cards/TestCard.json');
+const AdaptiveCard = require('../cards/TestCard.json');
 
 const ROLE_WATERFALL_DIALOG = 'roleWaterfallDialog';
 

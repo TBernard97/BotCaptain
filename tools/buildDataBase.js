@@ -1,5 +1,5 @@
 const prompt = require('prompt');
-const { fileIO } = require('./fileIO');
+const { fileIO } = require('../src/fileIO');
 
 
 

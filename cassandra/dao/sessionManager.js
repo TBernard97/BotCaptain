@@ -3,7 +3,7 @@ const Mapper = cassandra.mapping.Mapper;
 var fs = require('fs');
 
 // load in config file
-const config = require('../config.json')
+const config = require('../../config.json')
 
 // mapping options object
 const mappingOptions = require('./mappingOptions');

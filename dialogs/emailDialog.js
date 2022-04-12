@@ -2,8 +2,8 @@ const { ComponentDialog, TextPrompt, WaterfallDialog} = require('botbuilder-dial
 const emailId = 'email'
 const nodemailer = require('nodemailer');
 const jsonfile = require('jsonfile');
-const config = require('./config');
-const { log } = require('./logger');
+const config = require('../config');
+const { log } = require('../src/logger');
 
 //Class extends the CompenetDialog from botbuilder and will request an address and message and then email to an address
 class EmailDialog extends ComponentDialog {

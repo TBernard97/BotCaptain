@@ -18,7 +18,7 @@ const GET_EMAIL_PROMPT = 'emailPrompt';
 
 //Prompt for nick
 const { NickPrompt } = require('./prompts/nickPrompt');
-const { channelValidation } = require('./channelValidation');
+const { channelValidation } = require('../src/channelValidation');
 const GET_NICK_PROMPT = 'nickPrompt';
 
 class ProfileDialog extends ComponentDialog {

@@ -1,11 +1,10 @@
 const { ChoicePrompt } = require('botbuilder-dialogs');
-const { log } = require('../../logger');
-const { fileIO } = require('../../fileIO')
-
+const { log } = require('../../../src/logger');
+const { fileIO } = require('../../../src/fileIO')
 
 // This is a custom choice prompt that will emit an error if the user
 // types an invalid choice.
-module.exports.TeamPrompt = class TeamPrompt extends ChoicePrompt {
+module.exports.TaskPrompt = class TaskPrompt extends ChoicePrompt {
     constructor(dialogId) {
         super(dialogId, async (prompt) => {
             var dialogUser = fileIO.checkDialog(prompt.context.activity.channelId,prompt.context.activity.from.id);
@@ -16,8 +15,8 @@ module.exports.TeamPrompt = class TeamPrompt extends ChoicePrompt {
             } else{
                 if (!prompt.recognized.succeeded) {
                     // An invalid choice was received, emit an error.
-                    await prompt.context.sendActivity(`Sorry, "${ prompt.context.activity.text }" is not on my list.`);
-                    log.error(`Student selected non-existent team.`);
+                    await prompt.context.sendActivity(`Sorry, the task "${ prompt.context.activity.text }" is not on my list.`);
+                    log.debug(`Student selected incorrect task.`);
                     return false;
                 } else {
                     return true;

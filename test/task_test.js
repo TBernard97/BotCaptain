@@ -1,6 +1,6 @@
 const { ConversationState, MemoryStorage, TestAdapter, UserState } = require("botbuilder");
 const{ DialogSet, DialogTurnStatus } = require("botbuilder-dialogs");
-const { TaskDialog } = require('../taskDialog.js');
+const { TaskDialog } = require('../dialogs/taskDialog.js');
 
 describe("TaskDialog test cases", function(){
     this.timeout(5000);

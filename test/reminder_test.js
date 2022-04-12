@@ -1,6 +1,6 @@
 const { ConversationState, MemoryStorage, TestAdapter, UserState } = require("botbuilder");
 const{ DialogSet, DialogTurnStatus } = require("botbuilder-dialogs");
-const { ReminderDialog } = require('../reminderDialog.js');
+const { ReminderDialog } = require('../dialogs/reminderDialog.js');
 
 describe("ReminderDialog test cases", function(){
     this.timeout(5000);

@@ -2,7 +2,7 @@ const { ComponentDialog, TextPrompt, WaterfallDialog} = require('botbuilder-dial
 const reminderId = 'reminderDialog';
 const jsonfile = require('jsonfile');
 //Module for scheduling emails
-const {scheduler} = require('./scheduler.js');
+const {scheduler} = require('../src/scheduler.js');
 //Prompt for Date
 const { DatePrompt } = require('./prompts/datePrompt');
 const GET_DATE_PROMPT = 'datePrompt';
@@ -13,7 +13,7 @@ const GET_TIME_PROMPT = 'timePrompt'
 const { TaskPrompt } = require('./prompts/taskPrompt');
 const GET_TASK_PROMPT = 'taskPrompt';
 //Module for recording xAPI statements
-const { xAPI_Statements } = require('./xAPI_Statements');
+const { xAPI_Statements } = require('../src/xAPI_Statements');
 
 
 class ReminderDialog extends ComponentDialog {

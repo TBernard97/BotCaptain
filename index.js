@@ -6,8 +6,8 @@
 var restify = require('restify');
 var path = require('path');
 var fs = require('fs');
-const { logger } = require('./logger');
-var { messageParser } = require('./messageParser'); //Need to finish this before it is used
+const { logger } = require('./src/logger');
+var { messageParser } = require('./src/messageParser.js'); //Need to finish this before it is used
 
 // Import required bot services.
 // See https://aka.ms/bot-services to learn more about the different parts of a bot.
