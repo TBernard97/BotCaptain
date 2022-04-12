@@ -17,6 +17,24 @@ var schema = {
         required: true
       },
 
+      s3AccessKeyId: {
+          hidden: false,
+          message: "Access Key ID for S3",
+          required: false
+      },
+
+      s3SecretAccessKey: {
+        hidden: true,
+        message: "Secret access key for S3",
+        required: false
+     },
+
+     s3Region: {
+        hidden: false,
+        message: "Region for S3",
+        required: false
+     },
+
       cassandraUsername: {
         hidden: false,
         message: "Username for cassandraDB",
@@ -97,6 +115,7 @@ var schema = {
           message: 'Kudu API password',
           hidden: true
       }
+
     }
   };
 
@@ -113,6 +132,13 @@ prompt.get(schema, function (err, result) {
     config.email = {
         address: "",
         password: ""
+    }
+
+    config.s3 = {
+        accessKeyID: "",
+        secretAccessKey: "",
+        region: "",
+        enabled: false
     }
 
     config.cassandra = {
@@ -211,6 +237,21 @@ prompt.get(schema, function (err, result) {
         }
     } else {
         console.log("[INFO] It seems that no kudu API parameters were specified.");
+    }
+
+    if(isBlank(result.s3AccessKeyId) == false && isBlank(result.s3SecretAccessKey) == false && isBlank(result.s3Region) == false){
+        try {
+            config.s3.accessKeyId = result.s3AccessKeyId;
+            config.s3.secretAccessKey = result.s3SecretAccessKey;
+            config.s3.region = result.s3Region;
+            config.s3.enabled = true;
+        } 
+
+        catch {
+            console.log("[INFO] It appears one or more S3 Parameters were not specified.")
+        }
+    } else {
+        console.log("[INFO] It seems no S3 parameters were specified.")
     }
 
     jsonfile.writeFileSync("./config.json", config, {flag: 'w'});
