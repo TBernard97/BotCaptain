@@ -14,8 +14,6 @@ const GET_TEAM_PROMPT = 'teamPrompt'
 const { EmailPrompt } = require('./prompts/emailPrompt')
 const GET_EMAIL_PROMPT = 'emailPrompt';
 
-
-
 //Prompt for nick
 const { NickPrompt } = require('./prompts/nickPrompt');
 const { channelValidation } = require('./channelValidation');
@@ -40,7 +38,7 @@ class ProfileDialog extends ComponentDialog {
          //Add Prompts
          //GET_CLASS_PROMPT Will validate that the class actually exists
          this.addDialog(new ClassPrompt(GET_CLASS_PROMPT));
-         
+
          //GET_TEAM_PROMPT Will validate the correct team is selected
          this.addDialog(new TeamPrompt(GET_TEAM_PROMPT));
 
@@ -85,10 +83,9 @@ class ProfileDialog extends ComponentDialog {
     async completeProfile(step){
         step.values.user.nick = step.result;
         step.values.user.votes = {};
+        step.values.user.loggedBadWords = {};
         return await step.endDialog(step.values.user);
     }
-
-
 
 }
 

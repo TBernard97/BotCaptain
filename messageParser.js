@@ -2,7 +2,10 @@ const { fileIO } = require('./fileIO');
 const jsonfile = require('jsonfile');
 const fs = require('fs');
 const { ActivityTypes, MessageFactory, TurnContext } = require('botbuilder');
+const { validateText } = require("aedos");
+const badWords = require('bad-words')
 const { profileAccessor } = require('./profileAccessor');
+
 
 // cassandra database
 const CassandraService = require('./service/CassandraService');
@@ -28,7 +31,7 @@ const { EmailDialog } = require('./emailDialog');
 const { ProfileDialog } = require('./profileDialog');
 //Task Dialog
 const { TaskDialog } = require('./taskDialog');
-//Reminder Dialog 
+//Reminder Dialog
 const { ReminderDialog } = require('./reminderDialog');
 //Role Selection Dialog
 const { RoleDialog } = require('./roleDialog');
@@ -60,8 +63,8 @@ class messageParser {
 
         //Create state property accessors
         this.dialogState = this.conversationState.createProperty(DIALOG_STATE_PROPERTY);
-        this.userInfoAccessor = this.userState.createProperty(USER_INFO_PROPERTY);  
-        
+        this.userInfoAccessor = this.userState.createProperty(USER_INFO_PROPERTY);
+
         //Init database connection
         this.cassandraService = new CassandraService();
         this.cassandraService.connect();
@@ -69,19 +72,19 @@ class messageParser {
         //Init queue for all messages
         this.messageQueue = new MessageQueue(this.cassandraService);
 
-        //Add dialogs here 
+        //Add dialogs here
         this.dialogs = new DialogSet(this.dialogState)
-            
+
             //Email Reminder
             .add(new EmailDialog('emailDialog'))
 
-            //Welcome and Build Profile 
+            //Welcome and Build Profile
             .add(new ProfileDialog('profileDialog'))
-        
-            //Displays User Selected tasks  
+
+            //Displays User Selected tasks
             .add(new TaskDialog('taskDialog'))
 
-            //Reminder 
+            //Reminder
             .add(new ReminderDialog('remindDialog'))
 
             //Role Selection
@@ -93,7 +96,34 @@ class messageParser {
             //Meeting Minutes (task progress report)
             .add(new MinutesDialog('minutesDialog'));
     }
-        
+
+    async detectBadWords(context, user) {
+      // Detect profanity in conversation text
+      const result = await validateText(`${context.activity.text}`).detectProfaneWordsInText();
+      const isProfane = result.data['is-profane']
+      if (isProfane) {
+        let profileTable = jsonfile.readFileSync(`Resources/Classes/${user.profile.class}/profiles.json`);
+        let profile = profileTable[`${user.profile.name}`]
+        var badWords = result.data['founded-words']
+        var loggedBadWords = Object.keys(profile.loggedBadWords)
+        for (var i in badWords) {
+          if (loggedBadWords.includes(badWords[i])) {
+              profile.loggedBadWords[`${badWords[i]}`] =  profile.loggedBadWords[`${badWords[i]}`] + 1
+            fileIO.insertProfile(profile);
+          }
+          else {
+            profile.loggedBadWords[`${badWords[i]}`] = 1
+            fileIO.insertProfile(profile)
+          }
+        }
+
+        const replyText = `Please do not use profane words in the chat.`
+        // can we add a count to the userProfile to track profane language counts?
+        await context.sendActivity(MessageFactory.text(replyText, replyText));
+        // By calling next() you ensure that the next BotHandler is run.
+      }
+    }
+
     async onTurn(turnContext) {
         //Store required information
         let channelID = turnContext.activity.channelId;
@@ -101,15 +131,21 @@ class messageParser {
         let userID = turnContext.activity.from.id;
         var txt = turnContext.activity.text;
         var val = turnContext.activity.value;
-        const xAPI_Handler = new xAPI_Statements(); 
+        const xAPI_Handler = new xAPI_Statements();
 
         if (turnContext.activity.type === ActivityTypes.Message) {
             //Create user object
             const user = await this.userInfoAccessor.get(turnContext, {});
+
+
             //Create dialog controller
             const dc = await this.dialogs.createContext(turnContext);
             const dialogTurnResult =  await dc.continueDialog();
-            //console.log(user.profile);
+
+            //Create dialog controller
+            const dc = await this.dialogs.createContext(turnContext);
+            const dialogTurnResult =  await dc.continueDialog();
+
             //If user profile does not exist in memory start dialog
             if(!user.profile) {
 
@@ -120,7 +156,7 @@ class messageParser {
                     let generated_hash = Buffer.from(hash_update.digest('hex'), 'hex');
 
                     let user_profile = await this.cassandraService.get_profile_by_email_dao().get_user_profile_by_channel(channelID, generated_hash);
-                    
+
                     try {
                         var profileComparison = Buffer.compare(generated_hash, user_profile.userId);
                     }
@@ -140,7 +176,7 @@ class messageParser {
                     log.info(`Profile for ${name} does not appear to be stored in Casandra DB}`);
                     fileIO.setDialog(channelID, userID);
                     await dc.beginDialog('profileDialog');
-                } 
+                }
                 else if(dialogTurnResult.status === DialogTurnStatus.complete) {
                     user.profile = dialogTurnResult.result;
                     user.profile.name = turnContext.activity.from.name;
@@ -159,9 +195,9 @@ class messageParser {
                     await turnContext.sendActivity('Your profile has been stored.');
                     await xAPI_Handler.recordLogin(user.profile.email);
                     log.info(`Profile for ${name} has been created.`);
-                }                      
-            } 
-            
+                }
+            }
+
             //If user profile is present grant access to full functionality
             else {
                 
@@ -195,17 +231,16 @@ class messageParser {
 
                     }
 
-                    
-                   
                 }
 
                 //Check for the existence of previous messages and process accordingly
                 var utterance = (turnContext.activity.text || '').trim().toLowerCase();
+                await this.detectBadWords(turnContext, user)
 
                 //Make new message by user object for message queue
                 let user_message = new Message(userID, user.profile.email, new Date(), utterance,
                                                 channelID);
-                
+
                 //List of BotCaptains available function plugins
                 let commands = ['task', 'remind', 'role', 'assign', 'minutes'];
 
@@ -216,7 +251,7 @@ class messageParser {
                     fileIO.setDialog(channelID, userID);
                     log.info(`[INFO] User ${user} initiated a command.`);
                     await dc.beginDialog(`${dialog}`, user);
-                    
+          
                         
                 } 
                 
@@ -226,7 +261,10 @@ class messageParser {
                     
                 }
 
-                
+
+                }
+
+
                 // Allow user to cancel or start any dialog
                 if (utterance === 'cancel') {
                     if (dc.activeDialog) {
@@ -236,7 +274,7 @@ class messageParser {
                         await dc.context.sendActivity('Nothing to cancel.');
                     }
                 }
-            
+
 
                 //Record turnContext data
                 fileIO.logContext(turnContext, user.profile);
@@ -249,17 +287,17 @@ class messageParser {
                     this.messageQueue.enqueue(user_message);
                 }
             }
-  
-            
-        }  else if(turnContext.activity.type === ActivityTypes.ConversationUpdate){    
+
+
+        }  else if(turnContext.activity.type === ActivityTypes.ConversationUpdate){
                 //Create dialog controller
                const dc = await this.dialogs.createContext(turnContext);
-             
+
                //Begin profileDialog
                fileIO.setDialog(channelID, userID);
                await dc.beginDialog('profileDialog');
         }
-        
+
         //Save changes
         await this.userState.saveChanges(turnContext);
         await this.conversationState.saveChanges(turnContext);
