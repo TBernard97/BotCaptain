@@ -9,6 +9,7 @@ const GET_TASK_PROMPT = 'taskPrompt';
 const TaskCard = require('./cards/TaskCard.json');
 const { fileIO } = require('./fileIO.js');
 const { xAPI_Statements } = require('./xAPI_Statements.js');
+const { profileAccessor } = require('./profileAccessor');
 const xAPI_Handler = new xAPI_Statements();
 
 class AssignDialog extends ComponentDialog {
@@ -39,8 +40,10 @@ class AssignDialog extends ComponentDialog {
         
         //Need to read profiles to get proper vote count. Profile passed to function may not have proper vote count.
         step.values.profileTable = jsonfile.readFileSync(`Resources/Classes/${step.options.profile.class}/profiles.json`);
-        step.values.profile = step.values.profileTable[`${step.options.profile.name}`];
-
+        
+        // Reading the most current profile from the profiles.json file
+        step.values.profile = profileAccessor.profileRead(step.options.profile);
+        
         //Used for indexing based on user count
         step.values.profileNamesList = Object.keys(step.values.profileTable);
         
@@ -62,7 +65,7 @@ class AssignDialog extends ComponentDialog {
         //If student already voted for a leader, don't even bother with remaining portions of dialog
         if(step.values.profile.votes[`${step.values.task_id}`] === true){
             await step.context.sendActivity("You already voted for someone to lead this task");
-            return await step.endDialog(); 
+            return await step.endDialog(step.values.profile); 
         } else{
             return await step.next();
         }
@@ -73,7 +76,7 @@ class AssignDialog extends ComponentDialog {
 
         TaskCard["body"][0].id = step.values.task_id;
         TaskCard["body"][3].text = step.values.task.description;
-        // Remove users from old state (accomodation for card import)
+        // Remove users from old state (accommodation for card import)
         TaskCard["body"][5].choices.length = 0;
         
         // Enumerate over each user in callers team and add to choices in card
@@ -162,13 +165,19 @@ class AssignDialog extends ComponentDialog {
         // Remove current user from choices when completed (workaround due to state being held on card import)
         TaskCard["body"][5].choices.length = 0;
         
+        let task_id=step.values.task_id;
 
         xAPI_Handler.recordRoleAssignment(step.options.profile.email, step.options.profile.nick, step.values.vote.leaderSelection, step.values.task_id);
-        step.values.profile.votes[`${step.values.task_id}`] = true;
-        fileIO.insertProfile(step.values.profile);
+        
+        var voteValue= {};
+        voteValue[`${task_id}`]=true;
+        let key='votes';
+        //profileUpdate returns the modified profile,
+        // which we again return into message parser to keep things consistent
+        step.values.profile=profileAccessor.profileVoteUpdate(step.values.profile, task_id , true) ;
         await step.context.sendActivity(`Voted for ${step.values.vote.leaderSelection} to lead ${step.values.task_id}`);
         
-        return await step.endDialog();
+        return await step.endDialog(step.values.profile);
     }
    
     

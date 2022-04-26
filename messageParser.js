@@ -4,6 +4,8 @@ const fs = require('fs');
 const { ActivityTypes, MessageFactory, TurnContext } = require('botbuilder');
 const { validateText } = require("aedos");
 const badWords = require('bad-words')
+const { profileAccessor } = require('./profileAccessor');
+
 
 // cassandra database
 const CassandraService = require('./service/CassandraService');
@@ -98,7 +100,6 @@ class messageParser {
     async detectBadWords(context, user) {
       // Detect profanity in conversation text
       const result = await validateText(`${context.activity.text}`).detectProfaneWordsInText();
-      console.log(result)
       const isProfane = result.data['is-profane']
       if (isProfane) {
         let profileTable = jsonfile.readFileSync(`Resources/Classes/${user.profile.class}/profiles.json`);
@@ -136,6 +137,11 @@ class messageParser {
             //Create user object
             const user = await this.userInfoAccessor.get(turnContext, {});
 
+
+            //Create dialog controller
+            const dc = await this.dialogs.createContext(turnContext);
+            const dialogTurnResult =  await dc.continueDialog();
+
             //Create dialog controller
             const dc = await this.dialogs.createContext(turnContext);
             const dialogTurnResult =  await dc.continueDialog();
@@ -167,7 +173,7 @@ class messageParser {
                 }
 
                 else if(dialogTurnResult.status === DialogTurnStatus.empty) {
-                    log.info(`Profile for ${name} does not apear to be stored in Casandra DB}`);
+                    log.info(`Profile for ${name} does not appear to be stored in Casandra DB}`);
                     fileIO.setDialog(channelID, userID);
                     await dc.beginDialog('profileDialog');
                 }
@@ -194,7 +200,8 @@ class messageParser {
 
             //If user profile is present grant access to full functionality
             else {
-
+                
+                 
                 //Check to see if message is coming from card
                 if (!txt && val){
 
@@ -244,6 +251,16 @@ class messageParser {
                     fileIO.setDialog(channelID, userID);
                     log.info(`[INFO] User ${user} initiated a command.`);
                     await dc.beginDialog(`${dialog}`, user);
+          
+                        
+                } 
+                
+                if(dialogTurnResult.status === DialogTurnStatus.complete){
+                    user.profile = dialogTurnResult.result;
+                    this.userInfoAccessor.set(turnContext, user);
+                    
+                }
+
 
                 }
 
