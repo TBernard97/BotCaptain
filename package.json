@@ -14,6 +14,7 @@
     },
     "dependencies": {
         "@microsoft/recognizers-text-suite": "^1.1.4",
+        "aedos": "^1.1.4",
         "axios": "^0.21.1",
         "botbuilder": "^4.3.4",
         "botbuilder-dialogs": "^4.3.4",
