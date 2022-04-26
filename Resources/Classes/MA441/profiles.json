@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 {"User":{"class":"ma441","team":"Team1","email":"abc@am.com","nick":"a","name":"User"},"bernart1":{"class":"MA441","team":"Team1","email":"darby.bernard@gmail.com","nick":"Tim","name":"bernart1"},"Bernard, Timothy D.":{"class":"MA441","team":"Team1","email":"darby.bernard@gmail.com","nick":"Tim","name":"Bernard, Timothy D."},"halla22000":{"class":"MA441","team":"Team2","email":"halla22@my.erau.edu","nick":"Alex","name":"halla22000"}}
+=======
+{"User":{"class":"ma441","team":"Team1","email":"k@k.com","nick":"abbb","votes":{"week1":true,"tutorial":true},"name":"User","role":"Business Overlord"},"bernart1":{"class":"MA441","team":"Team1","email":"darby.bernard@gmail.com","nick":"Tim","name":"bernart1"},"Bernard, Timothy D.":{"class":"MA441","team":"Team1","email":"darby.bernard@gmail.com","nick":"Tim","name":"Bernard, Timothy D."},"halla22000":{"class":"MA441","team":"Team2","email":"halla22@my.erau.edu","nick":"Alex","name":"halla22000"}}
+>>>>>>> 1dd8ea8e06000e473ec298824276f101f8566c52

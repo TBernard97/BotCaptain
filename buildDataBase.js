@@ -1,6 +1,6 @@
 const prompt = require('prompt');
 const { fileIO } = require('./fileIO');
-const jsonfile = require('jsonfile');
+
 
 
 var schema = {
@@ -24,20 +24,7 @@ prompt.start();
 
 prompt.get(schema, function (err, result) {
     if (err) { return onErr(err); }
-
-    fileIO.buildDB(result.ClassNumber);
-    fileIO.makeDirectory(`./Resources/Classes/${result.ClassNumber}`)
-    fileIO.makeDirectory(`./Resources/Classes/${result.ClassNumber}/Teams/`)
-
-    try {
-        fileIO.makeDirectory(`./Resources/Classes/${result.ClassNumber}/Teams/${result.TeamName}`)
-        jsonfile.writeFileSync(`./Resources/Classes/${result.ClassNumber}/Teams/${result.TeamName}/tasks.json`, {}, {flag: 'w'})
-    }
-
-    catch{
-        console.log("[INFO] It appears no team name was specified for the class")
-    }
-
+    fileIO.buildDB(result.ClassNumber, result.TeamName);
     console.log(`Database built for ${result.ClassNumber}`)
 
 })

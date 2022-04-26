@@ -1,12 +1,11 @@
 const { ComponentDialog, TextPrompt, WaterfallDialog} = require('botbuilder-dialogs');
 const reminderId = 'reminderDialog';
-const fs = require('fs');
 const jsonfile = require('jsonfile');
 //Module for scheduling emails
 const {scheduler} = require('./scheduler.js');
 //Prompt for Date
 const { DatePrompt } = require('./prompts/datePrompt');
-const GET_DATE_PROMPT = 'emailPrompt';
+const GET_DATE_PROMPT = 'datePrompt';
 //Prompt for Time
 const { TimePrompt } = require('./prompts/timePrompt');
 const GET_TIME_PROMPT = 'timePrompt'
@@ -68,7 +67,7 @@ class ReminderDialog extends ComponentDialog {
 
     async promptForTime(step){
         step.values.date = step.result;
-        step.values.time = {}
+        step.values.time = {};
         return await step.prompt(GET_TIME_PROMPT, 'What time would you like this reminder to be sent?');
     }
 

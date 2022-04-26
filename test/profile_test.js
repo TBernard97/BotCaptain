@@ -14,8 +14,6 @@ describe("ProfileDialog tests cases", function (){
             const dc = await dialogs.createContext(context);
             let userID = context.activity.from.id;
             let channelID = context.activity.channelId;
-            console.log(`UserID: ${userID}, ChannelID: ${channelID}`)
-            // jsonfile.writeFileSync('./dialogID.json', activityId, {flag: 'w'})
             fileIO.setDialog(channelID, userID);
             const results = await dc.continueDialog();
             if(results.status === DialogTurnStatus.empty){
@@ -51,8 +49,8 @@ describe("ProfileDialog tests cases", function (){
         });
         await adapter.test("Hello", "Hello User1. Please answer the following questions to setup your profile.")
             .assertReply("What class are you in?")
-            .send("MA442")
-            .assertReply('The class MA442 does not exist.');
+            .send("MA443")
+            .assertReply('The class MA443 does not exist.');
     });
 
     it("should fail on incorrect team", async () => {
