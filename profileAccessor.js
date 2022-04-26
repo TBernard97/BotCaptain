@@ -17,7 +17,7 @@ class profileAccessor{
         
         user[`${key}`]=val;
         
-        console.log(user);
+        
         //Update profile in profiles.json
         fileIO.insertProfile(user);
         //Used to update messageParser's profile through returning step.values.profile in dialogs
@@ -28,7 +28,7 @@ class profileAccessor{
         let user = {...profile};
         user.votes[`${task}`]=val;
         
-        console.log(user);
+        
         //Update profile in profiles.json
         fileIO.insertProfile(user);
         //Used to update messageParser's profile through returning step.values.profile in dialogs

@@ -264,9 +264,7 @@ class messageParser {
         await this.userState.saveChanges(turnContext);
         await this.conversationState.saveChanges(turnContext);
     }
-    static writeToMemory(turnContext,user){
-    this.userInfoAccessor.set(turnContext, user);
-        }
+
 }
 
 module.exports.messageParser = messageParser;
